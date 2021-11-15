@@ -22,8 +22,8 @@ import { useStyles, useModalStyles, useAddStyles } from './style';
 
 function SubMenuBar() {
   const {
-    state: { fontSize, loadIntro, openMainMenu },
-    actions: { setFontSize, setLoadIntro },
+    state: { fontSize, loadIntro, openMainMenu, anchorAddMaterial },
+    actions: { setFontSize, setLoadIntro, setAnchorAddMaterial },
   } = useContext(AppContext);
 
   const menuRef = useRef(null);
@@ -32,7 +32,7 @@ function SubMenuBar() {
   const addClasses = useAddStyles();
   const modalClasses = useModalStyles();
   const [anchorMainMenu, setAnchorMainMenu] = useState(null);
-  const [anchorAddMaterial, setAnchorAddMaterial] = useState(null);
+
   const [openAbout, setOpenAbout] = useState(false);
 
   const { t } = useTranslation();

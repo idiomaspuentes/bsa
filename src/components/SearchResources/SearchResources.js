@@ -143,7 +143,7 @@ function SearchResources({ anchorEl, onClose, open }) {
         open={open}
         onClose={onClose}
       >
-        <MenuItem button={false}>
+        <MenuItem button={false} className="intro-add-languages">
           <Button
             onClick={handleOpenDialog}
             startIcon={<LanguageIcon size={'small'} />}

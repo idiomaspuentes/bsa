@@ -63,6 +63,7 @@ export function AppContextProvider({ children }) {
   const [languageResources, setLanguageResources] = useState(() => {
     return checkLSVal('languageResources', ['en', 'el-x-koine', 'hbo'], 'object');
   });
+  const [anchorAddMaterial, setAnchorAddMaterial] = useState(null);
 
   const config = { server };
   const { t } = useTranslation();
@@ -107,6 +108,7 @@ export function AppContextProvider({ children }) {
 
   const value = {
     state: {
+      anchorAddMaterial,
       appConfig,
       breakpoint,
       currentLanguage,
@@ -125,6 +127,7 @@ export function AppContextProvider({ children }) {
       showErrorReport,
     },
     actions: {
+      setAnchorAddMaterial,
       setAppConfig,
       setBreakpoint,
       setCurrentLanguage,

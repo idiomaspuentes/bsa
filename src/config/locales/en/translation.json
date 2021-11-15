@@ -52,6 +52,7 @@
   "el-x-koine": "Ancient greek",
   "hbo": "Hebrew",
   "introStart": "Here is an interactive guide to the App.<br>We want to show you the functionality.<br>Let's go!",
+  "introAddLanguages":"Text",
   "introAppBar": "In the upper part there is an application bar (app bar). On the left is a choice between the Bible and Open Bible Stories (OBS).<br> In the center there are buttons that display the current address and by click them in the 'Bible' mode you can select a book and a chapter, and in the OBS mode - a history. On the right there is a button that opens the main menu (hamburger menu)",
   "introBookList": "The book selection dialog. After selecting a book, the chapter selection window will automatically open",
   "introChapterList": "Chapter selection dialog",

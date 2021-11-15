@@ -34,6 +34,7 @@ function Intro() {
       setShowErrorReport,
       setLoadIntro,
       setOpenMainMenu,
+      setAnchorAddMaterial,
     },
     state: { loadIntro, showChapterSelect },
   } = useContext(AppContext);
@@ -80,6 +81,10 @@ function Intro() {
     {
       element: '.intro-hamburger',
       intro: t('introHamburger'),
+    },
+    {
+      element: '.intro-add-languages',
+      intro: t('introAddLanguages'),
     },
   ];
   useEffect(() => {
@@ -139,9 +144,16 @@ function Intro() {
         stepsRef.current.updateStepElement(stepIndex);
         break;
       case '10':
+        setAnchorAddMaterial(false);
         setIntroContextMenuPosition(initialPosition);
         setShowErrorReport(false);
         document.querySelector('.intro-hamburger').style.opacity = 1;
+        stepsRef.current.updateStepElement(stepIndex);
+        break;
+      case '11':
+        setAnchorAddMaterial(true);
+        document.querySelector('.intro-add-languages').style.opacity = 1;
+        document.querySelector('.intro-hamburger').style.opacity = 0;
         stepsRef.current.updateStepElement(stepIndex);
         break;
       default:
