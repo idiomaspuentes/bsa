@@ -22,6 +22,7 @@ export default function Chapter({
     owner: resource.owner,
     server,
   });
+  // console.log(content);
   return (
     <Card
       closeable

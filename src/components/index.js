@@ -12,6 +12,7 @@ export * from './FrontModal';
 export * from './OBSVerses';
 export * from './SelectModeBible';
 export * from './SelectResourcesLanguages';
+export * from './Search';
 export * from './SearchResources';
 export * from './SelectLanguage';
 export * from './ShowReference';
