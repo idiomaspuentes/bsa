@@ -1,48 +1,69 @@
-import React from 'react';
-import { useProskomma, useSearch } from 'proskomma-react-hooks';
+import React, { useContext } from 'react';
+
+import { useProskomma, useQuery } from 'proskomma-react-hooks';
+
 import ReactJson from 'react-json-view';
 import DialogUI from '../DialogUI/DialogUI';
 import { Button } from '@material-ui/core';
 import { useContent } from 'translation-helps-rcl';
-// import { Proskomma } from 'proskomma';
-const { Proskomma } = require('proskomma');
-const searchText = 'надежде';
+
+import { ReferenceContext } from '../../context';
 
 function Search() {
-  const pk = new Proskomma();
-  console.log('Here is our instance of Proskomma, before importing any document');
-  console.log(pk);
+  const {
+    state: { referenceSelected },
+  } = useContext(ReferenceContext);
+
+  const { bookId, chapter, verse } = referenceSelected;
 
   const usfm = useContent({
-    chapter: 1,
-    projectId: 'tit',
+    chapter: chapter,
+    projectId: bookId,
     branch: 'master',
     languageId: 'ru',
     resourceId: 'rlob',
     owner: 'bsa',
     server: 'https://git.door43.org',
   });
-  const pkDoc = pk.importDocument(
-    // eslint-disable-next-line no-undef
-    (selectors = { lang: 'eng', abbr: 'ult' }),
-    // eslint-disable-next-line no-undef
-    (contentType = 'usfm'),
-    // eslint-disable-next-line no-undef
-    (content = usfm)
-  );
-  // console.log(content);
-  const _documents = [
-    {
-      selectors: {
-        org: 'bsa',
-        lang: 'ru',
-        abbr: 'rlob',
-      },
-      bookId: 'tit',
-      data: usfm.markdown,
-    },
-  ];
+
   const [open, setOpen] = React.useState(false);
+  //   const usfm = `
+  // \\id 3JN
+  // \\ide UTF-8
+  // \\h 3 Jean
+  // \\toc1 3 Jean
+  // \\mt 3 Jean
+
+  // \\s5
+  // \\c 1
+  // \\p
+  // \\v 1 L'ancien au bien-aimé Gaius, que j'aime dans la vérité.
+  // \\v 2 Bien-aimé, je prie que tu pospères en toutes choses et sois en santé, juste comme prospère ton âme.
+  // `;
+
+  const _documents = usfm
+    ? [
+        {
+          selectors: {
+            org: 'bsa',
+            lang: 'ru',
+            abbr: 'rlob',
+          },
+          bookId: bookId,
+          data: usfm.markdown,
+        },
+      ]
+    : null;
+
+  const query = `{
+  processor
+  packageVersion
+  documents(withBook: "${bookId.toUpperCase()}") {
+    cv (chapter:"${chapter}" verses:["${verse}"]) 
+      { text }
+  }
+}`;
+
   const {
     stateId,
     proskomma,
@@ -55,27 +76,24 @@ function Search() {
   });
 
   const {
-    stateId: searchStateId,
-    query,
+    stateId: queryStateId,
+    query: queryRun,
     data,
-    passages,
-    errors: searchErrors,
-  } = useSearch({
+    errors: queryErrors,
+  } = useQuery({
     proskomma,
     stateId,
-    text: searchText,
+    query,
   });
 
+  console.log(data);
+
   const json = {
-    stateId,
-    searchStateId,
-    documents,
-    proskommaErrors,
-    searchText,
-    searchErrors,
-    query,
-    passages,
+    queryStateId,
+    // documents,
+    query: queryRun,
     data,
+    errors: [...proskommaErrors, ...queryErrors],
   };
   const onClose = () => {
     setOpen(false);

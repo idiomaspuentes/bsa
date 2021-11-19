@@ -54,12 +54,14 @@ export default function TypoReport() {
           setErrorFile(res.file);
           setOpenFinishDialog(true);
         } else {
+          setOpenFinishDialog(true);
           setShowErrorReport(true);
           setErrorMessage(res.message);
         }
       })
       .catch((err) => {
         console.log('err', err);
+        setOpenFinishDialog(true);
         setErrorMessage(err.message);
         setShowErrorReport(true);
         setOpenBackdrop(false);
