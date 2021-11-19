@@ -30,6 +30,7 @@
     "match-sorter": "^6.3.1",
     "notistack": "^1.0.10",
     "prop-types": "^15.7.2",
+    "proskomma": "^0.4.90",
     "proskomma-react-hooks": "^0.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
