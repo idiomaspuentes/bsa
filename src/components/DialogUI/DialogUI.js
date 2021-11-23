@@ -36,7 +36,7 @@ function DialogUI({
       classes={classes}
       open={open}
       fullWidth={true}
-      maxWidth={'sm'}
+      maxWidth={'lg'}
       onClose={onClose}
     >
       {titleDialog && <DialogTitle>{titleDialog}</DialogTitle>}

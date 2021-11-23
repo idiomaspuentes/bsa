@@ -32,7 +32,6 @@
     "prop-types": "^15.7.2",
     "proskomma": "^0.4.90",
     "proskomma-react-hooks": "^0.1.1",
-    "proskomma-scripture-resources-rcl": "file:.yalc/proskomma-scripture-resources-rcl",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hotkeys-hook": "^3.4.3",

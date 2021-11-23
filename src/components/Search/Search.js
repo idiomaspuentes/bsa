@@ -4,7 +4,15 @@ import { useProskomma, useQuery } from 'proskomma-react-hooks';
 
 import ReactJson from 'react-json-view';
 import DialogUI from '../DialogUI/DialogUI';
-import { Button } from '@material-ui/core';
+import {
+  Button,
+  TextField,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  RadioGroup,
+  Radio,
+} from '@material-ui/core';
 import { useContent } from 'translation-helps-rcl';
 
 import { ReferenceContext } from '../../context';
@@ -27,20 +35,15 @@ function Search() {
   });
 
   const [open, setOpen] = React.useState(false);
-  //   const usfm = `
-  // \\id 3JN
-  // \\ide UTF-8
-  // \\h 3 Jean
-  // \\toc1 3 Jean
-  // \\mt 3 Jean
-
-  // \\s5
-  // \\c 1
-  // \\p
-  // \\v 1 L'ancien au bien-aimé Gaius, que j'aime dans la vérité.
-  // \\v 2 Bien-aimé, je prie que tu pospères en toutes choses et sois en santé, juste comme prospère ton âme.
-  // `;
-
+  const [value, setValue] = React.useState('');
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const handleChange = (event) => {
+    console.log(event.target.value);
+    setValue(event.target.value);
+  };
+  const handleChangeInput = (event) => {
+    setSearchQuery(event.target.value);
+  };
   const _documents = usfm
     ? [
         {
@@ -55,14 +58,14 @@ function Search() {
       ]
     : null;
 
-  const query = `{
-  processor
-  packageVersion
-  documents(withBook: "${bookId.toUpperCase()}") {
-    cv (chapter:"${chapter}" verses:["${verse}"]) 
-      { text }
-  }
-}`;
+  //   const query = `{
+  //   processor
+  //   packageVersion
+  //   documents(withBook: "${bookId.toUpperCase()}") {
+  //     cv (chapter:"" )
+  //       { text }
+  //   }
+  // }`;
 
   const {
     stateId,
@@ -74,6 +77,7 @@ function Search() {
     serialize: false,
     verbose: true,
   });
+  console.log(value);
 
   const {
     stateId: queryStateId,
@@ -83,11 +87,9 @@ function Search() {
   } = useQuery({
     proskomma,
     stateId,
-    query,
+    query: value,
   });
-
   console.log(data);
-
   const json = {
     queryStateId,
     // documents,
@@ -98,12 +100,146 @@ function Search() {
   const onClose = () => {
     setOpen(false);
   };
+  const queryes = [
+    {
+      id: '1',
+      name: 'Все слова в книге',
+      text: `{ docSets { document(bookCode: "TIT") { mainSequence { id type wordLikes tags } } } } `,
+    },
+    {
+      id: '2',
+      name: 'Вся книга',
+      text: `{
+    docSets {
+             id
+             selectors { key value }
+             tags
+             documents {
+               id
+               header (id:"toc")
+               tags
+               sequences {
+                 id
+                 type
+                 tags
+                 blocks{
+                   is { type subType payload  }
+                   bs { payload }
+                   bg { subType payload }
+                   tokens { type subType payload }
+                   items  { type subType payload  }
+                 }
+               }
+             }
+           }
+   }`,
+    },
+    {
+      id: '3',
+      name: 'По главам',
+      text: `{
+                docSets {
+                  document(bookCode: "TIT") {
+                     cvIndex(chapter:1) {
+                        chapter
+                        verseNumbers {
+                          number
+                          range 
+                          }
+                        verseRanges {
+                           range
+                          numbers
+                        }
+                        verses {
+                          verse {
+                            items {
+                              subType
+                              payload
+              }text
+            }
+          }
+        }
+      }
+    }
+   }`,
+    },
+    {
+      id: '4',
+      name: 'Непонятно',
+      text: `{
+     processor
+     packageVersion
+     documents {  mainSequence { id type  blocks { items { subType payload } tokens{payload} os { payload } is { payload } text }  }
+      }
+   } `,
+    },
+    {
+      id: '5',
+      name: 'Непонятно2',
+      text: `{ docSets { id nDocuments documents { id } } } `,
+    },
+    {
+      id: '6',
+      name: 'yj',
+      text: `{
+     processor
+     packageVersion
+     documents {  mainSequence { id type  blocks { items { subType payload } tokens{payload} os { payload } is { payload } text }  }
+      }
+   } `,
+    },
+    {
+      id: '7',
+      name: 'Похоже на поиск',
+      text: `{ docSets
+  { 
+    document(bookCode:"TIT")
+    { title: header(id:"toc")      
+      mainSequence { id type tags hasChars(chars: "${searchQuery}")}
+    } 
+  } 
+} `,
+    },
+  ];
   return (
     <>
       <Button variant="contained" onClick={() => setOpen(true)}>
         Proskomma
       </Button>
       <DialogUI open={open} onClose={onClose} titleDialogClose>
+        <TextField
+          id="outlined-multiline-static"
+          style={{ width: '500px' }}
+          multiline
+          rows={10}
+          variant="outlined"
+          value={value}
+        />
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Gender</FormLabel>
+          <RadioGroup
+            aria-label="gender"
+            name="gender1"
+            onChange={handleChange}
+            value={value}
+          >
+            {queryes.map((el) => (
+              <FormControlLabel
+                key={el.id}
+                value={el.text}
+                control={<Radio />}
+                label={el.name}
+              />
+            ))}
+          </RadioGroup>
+        </FormControl>
+        <TextField
+          id="outlined-multiline-static"
+          style={{ width: '200px' }}
+          variant="outlined"
+          onChange={handleChangeInput}
+        />
         <ReactJson
           style={{ maxHeight: '500px', overflow: 'scroll' }}
           src={json}
