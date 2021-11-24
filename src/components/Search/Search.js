@@ -4,15 +4,7 @@ import { useProskomma, useQuery } from 'proskomma-react-hooks';
 
 import ReactJson from 'react-json-view';
 import DialogUI from '../DialogUI/DialogUI';
-import {
-  Button,
-  TextField,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  RadioGroup,
-  Radio,
-} from '@material-ui/core';
+import { Button, TextField, Select, MenuItem } from '@material-ui/core';
 import { useContent } from 'translation-helps-rcl';
 
 import { ReferenceContext } from '../../context';
@@ -22,7 +14,7 @@ function Search() {
     state: { referenceSelected },
   } = useContext(ReferenceContext);
 
-  const { bookId, chapter, verse } = referenceSelected;
+  const { bookId, chapter } = referenceSelected;
 
   const usfm = useContent({
     chapter: chapter,
@@ -35,14 +27,15 @@ function Search() {
   });
 
   const [open, setOpen] = React.useState(false);
+  const [selectValue, setSelectValue] = React.useState('');
   const [value, setValue] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const handleChange = (event) => {
-    console.log(event.target.value);
+  const handleChangeSelect = (event) => {
     setValue(event.target.value);
+    setSelectValue(event.target.value);
   };
-  const handleChangeInput = (event) => {
-    setSearchQuery(event.target.value);
+  const onRun = () => {
+    setSearchQuery(value);
   };
   const _documents = usfm
     ? [
@@ -67,18 +60,12 @@ function Search() {
   //   }
   // }`;
 
-  const {
-    stateId,
-    proskomma,
-    documents,
-    errors: proskommaErrors,
-  } = useProskomma({
+  const hookRes = useProskomma({
     documents: _documents,
     serialize: false,
     verbose: true,
   });
-  console.log(value);
-
+  const { stateId, proskomma, errors: proskommaErrors } = hookRes;
   const {
     stateId: queryStateId,
     query: queryRun,
@@ -87,12 +74,10 @@ function Search() {
   } = useQuery({
     proskomma,
     stateId,
-    query: value,
+    query: searchQuery,
   });
-  console.log(data);
   const json = {
     queryStateId,
-    // documents,
     query: queryRun,
     data,
     errors: [...proskommaErrors, ...queryErrors],
@@ -144,7 +129,7 @@ function Search() {
                         chapter
                         verseNumbers {
                           number
-                          range 
+                          range
                           }
                         verseRanges {
                            range
@@ -192,12 +177,12 @@ function Search() {
       id: '7',
       name: 'Похоже на поиск',
       text: `{ docSets
-  { 
+  {
     document(bookCode:"TIT")
-    { title: header(id:"toc")      
+    { title: header(id:"toc")
       mainSequence { id type tags hasChars(chars: "${searchQuery}")}
-    } 
-  } 
+    }
+  }
 } `,
     },
   ];
@@ -207,44 +192,48 @@ function Search() {
         Proskomma
       </Button>
       <DialogUI open={open} onClose={onClose} titleDialogClose>
-        <TextField
-          id="outlined-multiline-static"
-          style={{ width: '500px' }}
-          multiline
-          rows={10}
-          variant="outlined"
-          value={value}
-        />
-
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Gender</FormLabel>
-          <RadioGroup
-            aria-label="gender"
-            name="gender1"
-            onChange={handleChange}
-            value={value}
+        <div style={{ display: 'flex' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexBasis: 0,
+              flexGrow: 1,
+            }}
           >
-            {queryes.map((el) => (
-              <FormControlLabel
-                key={el.id}
-                value={el.text}
-                control={<Radio />}
-                label={el.name}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-        <TextField
-          id="outlined-multiline-static"
-          style={{ width: '200px' }}
-          variant="outlined"
-          onChange={handleChangeInput}
-        />
-        <ReactJson
-          style={{ maxHeight: '500px', overflow: 'scroll' }}
-          src={json}
-          theme="monokai"
-        />
+            <TextField
+              style={{ height: '400px', overflow: 'auto' }}
+              multiline
+              variant="outlined"
+              value={value}
+              onChange={(e) => {
+                setValue(e.target.value);
+              }}
+            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Select value={selectValue} onChange={handleChangeSelect}>
+                {queryes.map((el) => (
+                  <MenuItem key={el.id} value={el.text}>
+                    {el.name}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Button color="primary" variant="contained" onClick={onRun}>
+                Запустить
+              </Button>
+            </div>
+          </div>
+          <ReactJson
+            style={{ maxHeight: '500px', overflow: 'scroll', flexBasis: 0, flexGrow: 1 }}
+            src={json}
+            theme="monokai"
+          />
+        </div>
       </DialogUI>
     </>
   );
