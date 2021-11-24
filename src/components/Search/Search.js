@@ -85,7 +85,15 @@ function Search() {
     query: searchQuery,
   });
   let verses = [];
-  if (data && data.docSets) {
+  if (
+    data &&
+    data.docSets &&
+    data.docSets.length > 0 &&
+    data.docSets[0].document &&
+    data.docSets[0].document.cv &&
+    data.docSets[0].document.cv.length > 0 &&
+    data.docSets[0].document.cv[0].tokens
+  ) {
     const dataState = data.docSets[0].document.cv[0].tokens.filter(
       (el) => el.scopes[1] === `verse/${verse}`
     );
@@ -152,62 +160,19 @@ function Search() {
       id: '3',
       name: 'По главам',
       text: `{
-                docSets {
-                  document(bookCode: "TIT") {
-                     cvIndex(chapter:1) {
-                        chapter
-                        verseNumbers {
-                          number
-                          range
-                          }
-                        verseRanges {
-                           range
-                          numbers
-                        }
-                        verses {
-                          verse {
-                            items {
-                              subType
-                              payload
-              }text
-            }
-          }
-        }
-      }
-    }
-   }`,
+        docSets {
+          document(bookCode:"${bookId.toUpperCase()}") {
+cv (chapter:"${chapter}" ) { tokens {subType payload scopes} }
+          
+      }}}`,
     },
+
     {
       id: '4',
-      name: 'Непонятно',
-      text: `{
-     processor
-     packageVersion
-     documents {  mainSequence { id type  blocks { items { subType payload } tokens{payload} os { payload } is { payload } text }  }
-      }
-   } `,
-    },
-    {
-      id: '5',
-      name: 'Непонятно2',
-      text: `{ docSets { id nDocuments documents { id } } } `,
-    },
-    {
-      id: '6',
-      name: 'yj',
-      text: `{
-     processor
-     packageVersion
-     documents {  mainSequence { id type  blocks { items { subType payload } tokens{payload} os { payload } is { payload } text }  }
-      }
-   } `,
-    },
-    {
-      id: '7',
       name: 'Похоже на поиск',
       text: `{ docSets
   {
-    document(bookCode:"TIT")
+    document(bookCode:"${bookId.toUpperCase()}")
     { title: header(id:"toc")
       mainSequence { id type tags hasChars(chars: "${searchQuery}")}
     }
@@ -284,6 +249,9 @@ function Search() {
                   </>
                 ))}
               </div>
+              <p></p>
+              <p></p>
+              <p></p>
               <>
                 <Popover
                   open={openPP}
