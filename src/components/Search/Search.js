@@ -4,7 +4,15 @@ import { useProskomma, useQuery } from 'proskomma-react-hooks';
 
 import ReactJson from 'react-json-view';
 import DialogUI from '../DialogUI/DialogUI';
-import { Button, TextField, Select, MenuItem } from '@material-ui/core';
+import {
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  Typography,
+  Popover,
+  makeStyles,
+} from '@material-ui/core';
 import { useContent } from 'translation-helps-rcl';
 
 import { ReferenceContext } from '../../context';
@@ -14,7 +22,7 @@ function Search() {
     state: { referenceSelected },
   } = useContext(ReferenceContext);
 
-  const { bookId, chapter } = referenceSelected;
+  const { bookId, chapter, verse } = referenceSelected;
 
   const usfm = useContent({
     chapter: chapter,
@@ -76,6 +84,27 @@ function Search() {
     stateId,
     query: searchQuery,
   });
+  let verses = [];
+  if (data && data.docSets) {
+    const dataState = data.docSets[0].document.cv[0].tokens.filter(
+      (el) => el.scopes[1] === `verse/${verse}`
+    );
+    console.log(dataState);
+
+    dataState.forEach((element) => {
+      // verse.push({ text: element.payload });
+      element.subType === 'wordLike'
+        ? verses.push({
+            id: element.id,
+            text: element.payload,
+            strong: element.scopes[4].replace('attribute/milestone/zaln/x-strong/0/', ''),
+            greek: element.scopes[5].replace('attribute/milestone/zaln/x-lemma/0/', ''),
+          })
+        : verses.push({ text: element.payload });
+    });
+    //
+  }
+  console.log(verse);
   const json = {
     queryStateId,
     query: queryRun,
@@ -186,6 +215,28 @@ function Search() {
 } `,
     },
   ];
+  const useStyles = makeStyles((theme) => ({
+    popover: {
+      pointerEvents: 'none',
+    },
+    paper: {
+      padding: theme.spacing(1),
+    },
+  }));
+  const classes = useStyles();
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [strong, setStrong] = React.useState(null);
+  console.log(strong);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const openPP = Boolean(anchorEl);
+
   return (
     <>
       <Button variant="contained" onClick={() => setOpen(true)}>
@@ -216,6 +267,40 @@ function Search() {
                 flexDirection: 'column',
               }}
             >
+              <div>
+                <span style={{ fontWeight: 'bold' }}>{`${verse} `}</span>
+                {verses.map((el) => (
+                  <>
+                    <span
+                      onClick={(event) => {
+                        handleClick(event);
+
+                        setStrong(`${el.greek} ${el.strong}`);
+                      }}
+                      key={el.id}
+                    >
+                      {el.text}
+                    </span>
+                  </>
+                ))}
+              </div>
+              <>
+                <Popover
+                  open={openPP}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                >
+                  <Typography className={classes.typography}>{strong}</Typography>
+                </Popover>
+              </>
               <Select value={selectValue} onChange={handleChangeSelect}>
                 {queryes.map((el) => (
                   <MenuItem key={el.id} value={el.text}>
