@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, useContent } from 'translation-helps-rcl';
 import USFMContent from './USFMContent';
 
-export default function Chapter({
+function Chapter({
   title,
   classes,
   onClose,
@@ -41,3 +41,5 @@ export default function Chapter({
     </Card>
   );
 }
+
+export default React.memo(Chapter);

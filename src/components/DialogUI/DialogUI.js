@@ -76,7 +76,7 @@ function DialogUI({
   );
 }
 
-export default DialogUI;
+export default React.memo(DialogUI);
 
 DialogUI.defaultProps = {
   primary: { text: false, onClick: false, disabled: false },

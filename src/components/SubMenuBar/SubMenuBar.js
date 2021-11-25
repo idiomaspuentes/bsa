@@ -151,4 +151,4 @@ function SubMenuBar() {
   );
 }
 
-export default SubMenuBar;
+export default React.memo(SubMenuBar);

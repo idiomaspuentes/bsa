@@ -25,16 +25,21 @@ function ShowReference() {
   const ismobile = matches ? t(bookId) : t(bookId + '_abbr');
   const showBook = bookId !== 'obs' ? ismobile : t('Story');
   const showChapter = chapter + ':' + verse;
-
-  const handleClickBook = () =>
+  const handleClickBook = React.useCallback(() => {
     bookId !== 'obs' ? setShowBookSelect(true) : setShowChapterSelect(true);
-  const handleClickChapter = () => setShowChapterSelect(true);
+  }, [setShowBookSelect, setShowChapterSelect, bookId]);
 
+  const handleClickChapter = React.useCallback(() => {
+    setShowChapterSelect(true);
+  }, [setShowChapterSelect]);
   return (
     <ButtonGroupUI
       buttons={[
-        { title: showBook && showBook.toUpperCase(), onClick: handleClickBook },
-        { title: showChapter, onClick: handleClickChapter },
+        { title: showBook && showBook.toUpperCase(), onClick: () => handleClickBook() },
+        {
+          title: showChapter,
+          onClick: () => handleClickChapter(),
+        },
       ]}
       buttonGroupProps={{
         disableElevation: true,
@@ -46,4 +51,4 @@ function ShowReference() {
   );
 }
 
-export default ShowReference;
+export default React.memo(ShowReference);

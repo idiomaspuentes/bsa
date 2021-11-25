@@ -109,7 +109,7 @@ function USFMContent({ reference, content, type, fontSize }) {
         </div>
       );
 
-      _verses.push(verse);
+      _verses = [..._verses, verse];
     }
     setVerses(_verses);
     // eslint-disable-next-line react-hooks/exhaustive-deps

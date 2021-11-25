@@ -3,14 +3,10 @@ import React from 'react';
 import { useStyles, useButtonStyles } from './style';
 import { ButtonGroup, Button } from '@material-ui/core';
 
-export default function ButtonGroupUI({
-  buttons = [],
-  buttonGroupProps = {},
-  style = {},
-}) {
+function ButtonGroupUI({ buttons = [], buttonGroupProps = {}, style = {} }) {
   const classes = useStyles();
   const classesButton = useButtonStyles();
-
+  console.log('ButtonGroup', buttons);
   return (
     <div className={classes.root} style={style}>
       <ButtonGroup {...buttonGroupProps}>
@@ -23,3 +19,4 @@ export default function ButtonGroupUI({
     </div>
   );
 }
+export default React.memo(ButtonGroupUI);
