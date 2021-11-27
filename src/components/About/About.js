@@ -6,25 +6,22 @@ import changeLog from '../../docs/CHANGELOG.md';
 import * as PACKAGE_JSON from '../../../package.json';
 import { DialogUI } from '../../components';
 import { MenuList, MenuItem } from '@material-ui/core';
+import axios from 'axios';
+
+const textLabel = PACKAGE_JSON
+  ? `v${PACKAGE_JSON?.default?.version}`
+  : `Information about application`;
 
 function About({ open, setOpen, handleClick }) {
   const [log, setLog] = useState();
 
   useEffect(() => {
-    fetch(changeLog)
-      .then((response) => response.text())
-      .then((text) => {
-        setLog({ text: text });
-      });
+    axios.get(changeLog).then((response) => setLog({ text: response.data }));
   }, []);
 
   const handleClose = () => {
     setOpen(false);
   };
-
-  const textLabel = PACKAGE_JSON
-    ? `v${PACKAGE_JSON?.default?.version}`
-    : `Information about application`;
 
   return (
     <>

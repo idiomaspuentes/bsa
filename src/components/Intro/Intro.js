@@ -20,7 +20,7 @@ function Intro() {
   const [, setIntroContextMenuOpen] = useState(false);
   const { t } = useTranslation();
   const stepsRef = useRef();
-  console.log('Intro');
+
   const {
     state: {
       referenceSelected: { bookId },
@@ -191,4 +191,4 @@ function Intro() {
   );
 }
 
-export default Intro;
+export default React.memo(Intro);

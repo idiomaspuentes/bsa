@@ -6,11 +6,12 @@ import { switchModeBible } from '../../helper';
 import { FormControl, NativeSelect } from '@material-ui/core';
 import { useStyles } from './style';
 
+const options = [
+  { key: 'obs', label: 'OBS' },
+  { key: 'bible', label: 'Bible' },
+];
+
 function SelectModeBible() {
-  const options = [
-    { key: 'obs', label: 'OBS' },
-    { key: 'bible', label: 'Bible' },
-  ];
   const { t } = useTranslation();
 
   const classes = useStyles();

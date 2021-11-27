@@ -16,6 +16,7 @@ import {
 } from '../../components';
 
 function Card({ type, onClose, classes }) {
+  const [resource, setResource] = React.useState(false);
   let CurrentCard;
   /**TODO
    *Move  all repeated code from Chapter,all Support* like const {*}=useContent({*}) to here
@@ -27,13 +28,14 @@ function Card({ type, onClose, classes }) {
   const {
     state: { referenceSelected },
   } = useContext(ReferenceContext);
-
-  let resource = false;
-  resourcesApp.forEach((el) => {
-    if (el.name === type) {
-      resource = el;
-    }
-  });
+  React.useEffect(() => {
+    resourcesApp.forEach((el) => {
+      if (el.name === type) {
+        setResource({ ...el });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resourcesApp]);
 
   if (!resource && resourcesApp.length > 0) {
     return false;
