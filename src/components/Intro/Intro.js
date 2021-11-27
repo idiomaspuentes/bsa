@@ -20,7 +20,7 @@ function Intro() {
   const [, setIntroContextMenuOpen] = useState(false);
   const { t } = useTranslation();
   const stepsRef = useRef();
-
+  console.log('Intro');
   const {
     state: {
       referenceSelected: { bookId },

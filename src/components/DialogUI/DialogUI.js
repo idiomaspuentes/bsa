@@ -25,7 +25,7 @@ function DialogUI({
 }) {
   const classesLocalTitle = useLocalTitleStyles();
   const { t } = useTranslation();
-
+  console.log('DialogUI');
   return (
     <Dialog
       classes={classes.root}
@@ -76,7 +76,7 @@ function DialogUI({
   );
 }
 
-export default React.memo(DialogUI);
+export default DialogUI;
 
 DialogUI.defaultProps = {
   primary: { text: false, onClick: false, disabled: false },

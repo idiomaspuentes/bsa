@@ -30,3 +30,4 @@ export * from './SupportTWL';
 export * from './Swipes';
 export * from './TypoReport';
 export * from './WorkspaceManager';
+export * from './Workspace';

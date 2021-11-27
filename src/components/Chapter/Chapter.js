@@ -22,6 +22,7 @@ function Chapter({
     owner: resource.owner,
     server,
   });
+
   return (
     <Card
       closeable
@@ -42,4 +43,4 @@ function Chapter({
   );
 }
 
-export default React.memo(Chapter);
+export default Chapter;

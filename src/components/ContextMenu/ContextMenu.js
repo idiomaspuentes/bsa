@@ -21,7 +21,7 @@ function ContextMenu({ position, setPosition, PopoverClasses }) {
   } = useContext(ReferenceContext);
 
   const { enqueueSnackbar } = useSnackbar();
-  console.log('hello');
+  console.log('ContextMenu');
   const handleContextClose = () => {
     setPosition(initialPosition);
   };

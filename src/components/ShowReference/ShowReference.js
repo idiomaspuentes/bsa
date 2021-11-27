@@ -51,4 +51,4 @@ function ShowReference() {
   );
 }
 
-export default React.memo(ShowReference);
+export default ShowReference;

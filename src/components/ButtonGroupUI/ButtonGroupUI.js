@@ -6,7 +6,7 @@ import { ButtonGroup, Button } from '@material-ui/core';
 function ButtonGroupUI({ buttons = [], buttonGroupProps = {}, style = {} }) {
   const classes = useStyles();
   const classesButton = useButtonStyles();
-  console.log('ButtonGroup', buttons);
+
   return (
     <div className={classes.root} style={style}>
       <ButtonGroup {...buttonGroupProps}>
@@ -19,4 +19,4 @@ function ButtonGroupUI({ buttons = [], buttonGroupProps = {}, style = {} }) {
     </div>
   );
 }
-export default React.memo(ButtonGroupUI);
+export default ButtonGroupUI;
