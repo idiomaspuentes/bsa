@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, useContent } from 'translation-helps-rcl';
 import USFMContent from './USFMContent';
-import { CircularProgress } from '@material-ui/core';
-import { useCircularStyles } from './style';
-
+import { CircularProgressUI } from '../../components';
 export default function Chapter({
   title,
   classes,
@@ -14,8 +12,7 @@ export default function Chapter({
   fontSize,
   server,
 }) {
-  const classesCircular = useCircularStyles();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { bookId, chapter } = reference;
   const content = useContent({
     chapter: chapter,
@@ -26,8 +23,9 @@ export default function Chapter({
     owner: resource.owner,
     server,
   });
+
   const { initialized, loading } = content?.resourceStatus;
-  React.useEffect(() => {
+  useEffect(() => {
     setIsLoading(!(initialized && !loading));
   }, [initialized, loading]);
 
@@ -41,11 +39,8 @@ export default function Chapter({
       classes={classes}
       fontSize={fontSize}
     >
-      {' '}
       {isLoading ? (
-        <div className={classesCircular.root}>
-          <CircularProgress color="primary" size={100} />
-        </div>
+        <CircularProgressUI />
       ) : (
         <USFMContent
           fontSize={fontSize}

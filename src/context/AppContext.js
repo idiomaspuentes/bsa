@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 
 import { ResourcesContextProvider } from 'scripture-resources-rcl';
-
+import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useTranslation } from 'react-i18next';
 import { ReferenceContext } from './ReferenceContext';
 import { getResources, getBookList, checkLSVal, getLayoutType } from '../helper';
@@ -81,7 +81,7 @@ export function AppContextProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [referenceSelected.bookId]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setResourceLinks(getResources(appConfig, resourcesApp));
   }, [appConfig, resourcesApp, breakpoint]);
 
@@ -90,7 +90,8 @@ export function AppContextProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLanguage]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
+    console.log({ resourcesApp });
     localStorage.setItem('resourcesApp', JSON.stringify(resourcesApp));
   }, [resourcesApp]);
 

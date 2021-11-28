@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
+import useDeepCompareEffect from 'use-deep-compare-effect';
 import { Card, CardContent, useContent, useCardState } from 'translation-helps-rcl';
 
 export default function SupportTWL(props) {
@@ -33,7 +34,7 @@ export default function SupportTWL(props) {
     chapter,
     projectId: bookId,
   });
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setItemIndex(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reference]);

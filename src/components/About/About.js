@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import ReactMarkdown from 'react-markdown';
+import axios from 'axios';
 
 import changeLog from '../../docs/CHANGELOG.md';
 import * as PACKAGE_JSON from '../../../package.json';
@@ -11,11 +12,7 @@ function About({ open, setOpen, handleClick }) {
   const [log, setLog] = useState();
 
   useEffect(() => {
-    fetch(changeLog)
-      .then((response) => response.text())
-      .then((text) => {
-        setLog({ text: text });
-      });
+    axios.get(changeLog).then((response) => setLog({ text: response.data }));
   }, []);
 
   const handleClose = () => {

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { AppContext, ReferenceContext } from '../../context';
 import { SelectResourcesLanguages, DialogUI } from '../../components';
@@ -121,7 +122,7 @@ function SearchResources({ anchorEl, onClose, open }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [languageResources]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     const newResources = findNewResources(prevResources.current, resourcesApp);
     if (newResources?.length > 0) {
       const listOBS = newResources.filter((res) =>

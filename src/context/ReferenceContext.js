@@ -1,6 +1,7 @@
 import { useBibleReference } from 'bible-reference-rcl';
 import { useHistory, useLocation } from 'react-router-dom';
 import React, { useState, createContext, useEffect } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { useTranslation } from 'react-i18next';
 import { checkLSVal } from '../helper';
@@ -80,7 +81,7 @@ export function ReferenceContextProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookId, chapter, verse]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (history.location.pathname !== '/' + bookId + '/' + chapter + '/' + verse) {
       const oldReference = JSON.parse(localStorage.getItem('reference'));
       const newReference = {

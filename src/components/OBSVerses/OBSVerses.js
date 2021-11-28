@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { Card, useContent } from 'translation-helps-rcl';
-
+import useEffect from 'use-deep-compare-effect';
 import OBSContent from './OBSContent';
 
 import { AppContext, ReferenceContext } from '../../context';

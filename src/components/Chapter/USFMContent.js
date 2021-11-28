@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getVerseText } from '../../helper';
 import { ReferenceContext } from '../../context';
 import { useScrollToVerse } from '../../hooks/useScrollToVerse';
-
+import useDeepCompareEffectNoCheck from 'use-deep-compare-effect';
 import { useNoContentStyles } from './style';
 import { ContextMenu } from '../../components';
 
@@ -17,7 +17,7 @@ const initialPosition = {
 function USFMContent({ reference, content, type, fontSize }) {
   const { t } = useTranslation();
   const [verses, setVerses] = useState();
-  const [chapter, setChapter] = useState();
+  const [chapter, setChapter] = useState({});
   const [positionContextMenu, setPositionContextMenu] = useState(initialPosition);
   const [verseRef] = useScrollToVerse('center');
   const classesNoContent = useNoContentStyles();
@@ -45,6 +45,7 @@ function USFMContent({ reference, content, type, fontSize }) {
     } else {
       setChapter(null);
     }
+
     return () => {
       // clean up
       isMounted = false;
@@ -52,7 +53,7 @@ function USFMContent({ reference, content, type, fontSize }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourceLink, reference.chapter]);
 
-  useEffect(() => {
+  useDeepCompareEffectNoCheck(() => {
     const handleContextMenu = (e, key, verseObjects) => {
       e.preventDefault();
       setReferenceBlock({
@@ -115,7 +116,7 @@ function USFMContent({ reference, content, type, fontSize }) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(chapter), JSON.stringify(reference), type, fontSize]);
+  }, [chapter, reference, type, fontSize]);
 
   const noContent = <div className={classesNoContent.root}>{t('No_content')}</div>;
 
