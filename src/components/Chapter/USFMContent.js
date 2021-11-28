@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { getVerseText } from '../../helper';
 import { ReferenceContext } from '../../context';
 import { useScrollToVerse } from '../../hooks/useScrollToVerse';
-import { CircularProgress } from '@material-ui/core';
-import { useCircularStyles, useNoContentStyles } from './style';
+
+import { useNoContentStyles } from './style';
 import { ContextMenu } from '../../components';
 
 const initialPosition = {
@@ -20,11 +20,10 @@ function USFMContent({ reference, content, type, fontSize }) {
   const [chapter, setChapter] = useState();
   const [positionContextMenu, setPositionContextMenu] = useState(initialPosition);
   const [verseRef] = useScrollToVerse('center');
-  const classesCircular = useCircularStyles();
   const classesNoContent = useNoContentStyles();
   const resource = content.resource;
   const resourceLink = resource?.resourceLink;
-  const { contentNotFoundError, error, loading } = content.resourceStatus;
+  const { contentNotFoundError, error } = content.resourceStatus;
 
   const {
     actions: { setReferenceBlock, goToBookChapterVerse },
@@ -69,64 +68,58 @@ function USFMContent({ reference, content, type, fontSize }) {
     };
 
     let _verses = [];
-    for (let key in chapter) {
-      if (parseInt(key).toString() !== key.toString()) {
-        continue;
-      }
-      const { verseObjects } = chapter[key];
-
-      const verseStyle = {
-        fontSize: fontSize + '%',
-      };
-      const handleClick = () => {
-        if (reference.verse !== key) {
-          goToBookChapterVerse(reference.bookId, reference.chapter, key);
+    if (content) {
+      for (let key in chapter) {
+        if (parseInt(key).toString() !== key.toString()) {
+          continue;
         }
-      };
+        const { verseObjects } = chapter[key];
 
-      const verse = (
-        <div
-          ref={(ref) => {
-            key.toString() === reference.verse.toString() && verseRef(ref);
-          }}
-          style={verseStyle}
-          className={
-            'verse' + (key.toString() === reference.verse.toString() ? ' current' : '')
+        const verseStyle = {
+          fontSize: fontSize + '%',
+        };
+        const handleClick = () => {
+          if (reference.verse !== key) {
+            goToBookChapterVerse(reference.bookId, reference.chapter, key);
           }
-          key={key}
-          onContextMenu={(e) => handleContextMenu(e, key, verseObjects)}
-          onClick={handleClick}
-        >
-          <Verse
-            verseKey={key}
-            verseObjects={verseObjects}
-            paragraphs={false}
-            showUnsupported={false}
-            disableWordPopover={false}
-            reference={{ ...reference, verse: key }}
-            renderOffscreen={false}
-          />
-        </div>
-      );
+        };
 
-      _verses.push(verse);
+        const verse = (
+          <div
+            ref={(ref) => {
+              key.toString() === reference.verse.toString() && verseRef(ref);
+            }}
+            style={verseStyle}
+            className={
+              'verse' + (key.toString() === reference.verse.toString() ? ' current' : '')
+            }
+            key={key}
+            onContextMenu={(e) => handleContextMenu(e, key, verseObjects)}
+            onClick={handleClick}
+          >
+            <Verse
+              verseKey={key}
+              verseObjects={verseObjects}
+              paragraphs={false}
+              showUnsupported={false}
+              disableWordPopover={false}
+              reference={{ ...reference, verse: key }}
+              renderOffscreen={false}
+            />
+          </div>
+        );
+
+        _verses.push(verse);
+      }
+      setVerses(_verses);
     }
-    setVerses(_verses);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapter, reference, type, fontSize]);
 
-  const loadingContent = (
-    <div className={classesCircular.root}>
-      <CircularProgress color="primary" size={100} />
-    </div>
-  );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(chapter), JSON.stringify(reference), type, fontSize]);
+
   const noContent = <div className={classesNoContent.root}>{t('No_content')}</div>;
 
-  const usfmContent = loading
-    ? loadingContent
-    : !contentNotFoundError || !error
-    ? verses
-    : noContent;
+  const usfmContent = !contentNotFoundError || !error ? verses : noContent;
 
   return (
     <>
