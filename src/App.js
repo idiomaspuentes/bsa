@@ -27,7 +27,6 @@ export default function App() {
       <Intro />
       <SubMenuBar />
       <TypoReport />
-
       <Workspace />
     </>
   );

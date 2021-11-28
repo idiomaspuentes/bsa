@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, useContent } from 'translation-helps-rcl';
 import USFMContent from './USFMContent';
-
+import { CircularProgress } from '@material-ui/core';
+import { useCircularStyles } from './style';
 function Chapter({
   title,
   classes,
@@ -12,6 +13,8 @@ function Chapter({
   fontSize,
   server,
 }) {
+  const classesCircular = useCircularStyles();
+  const [isLoading, setIsLoading] = React.useState(false);
   const { bookId, chapter } = reference;
   const content = useContent({
     chapter: chapter,
@@ -23,6 +26,12 @@ function Chapter({
     server,
   });
 
+  React.useEffect(() => {
+    setIsLoading(
+      !(content.resourceStatus.initialized && !content.resourceStatus.loading)
+    );
+  }, [content.resourceStatus]);
+
   return (
     <Card
       closeable
@@ -33,12 +42,18 @@ function Chapter({
       classes={{ ...classes, root: classes.root + ' intro-card' }}
       fontSize={fontSize}
     >
-      <USFMContent
-        fontSize={fontSize}
-        content={content}
-        type={type}
-        reference={reference}
-      />
+      {isLoading ? (
+        <div className={classesCircular.root}>
+          <CircularProgress color="primary" size={100} />
+        </div>
+      ) : (
+        <USFMContent
+          fontSize={fontSize}
+          content={content}
+          type={type}
+          reference={reference}
+        />
+      )}
     </Card>
   );
 }

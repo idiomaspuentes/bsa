@@ -35,7 +35,7 @@ function Card({ type, onClose, classes }) {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resourcesApp]);
+  }, [JSON.stringify(resourcesApp)]);
 
   if (!resource && resourcesApp.length > 0) {
     return false;
