@@ -21,7 +21,7 @@ import { MenuItem, Menu, Button } from '@material-ui/core';
 import LanguageIcon from '@material-ui/icons/Language';
 import FolderIcon from '@material-ui/icons/Folder';
 import { useStyles, useAddStyles } from './style';
-
+import { DropLoad } from '../../components';
 function SearchResources({ anchorEl, onClose, open }) {
   const {
     state: { appConfig, resourcesApp, languageResources },
@@ -35,6 +35,7 @@ function SearchResources({ anchorEl, onClose, open }) {
   } = useContext(ReferenceContext);
 
   const { t } = useTranslation();
+  const [openDrop, setOpenDrop] = useState(false);
   const classes = useStyles();
   const addClasses = useAddStyles();
   const [openDialog, setOpenDialog] = useState(false);
@@ -199,6 +200,7 @@ function SearchResources({ anchorEl, onClose, open }) {
         {menuItems.length !== 0 ? menuItems : emptyMenuItems}
         <MenuItem button={false}>
           <Button
+            onClick={() => setOpenDrop(true)}
             startIcon={<FolderIcon size={'small'} />}
             classes={addClasses}
             variant="outlined"
@@ -210,6 +212,7 @@ function SearchResources({ anchorEl, onClose, open }) {
           </Button>
         </MenuItem>
       </Menu>
+      <DropLoad open={openDrop} />
       <DialogUI
         title={t('Choose_languages_resources')}
         open={openDialog}

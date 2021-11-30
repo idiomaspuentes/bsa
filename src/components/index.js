@@ -8,6 +8,7 @@ export * from './ChapterList';
 export * from './ChapterSelect';
 export * from './ContextMenu';
 export * from './DialogUI';
+export * from './DropLoad';
 export * from './FrontModal';
 export * from './Intro';
 export * from './OBSVerses';
