@@ -19,6 +19,7 @@ import { getUniqueResources } from '../../helper';
 import { MenuItem, Menu, Button } from '@material-ui/core';
 
 import LanguageIcon from '@material-ui/icons/Language';
+import FolderIcon from '@material-ui/icons/Folder';
 import { useStyles, useAddStyles } from './style';
 
 function SearchResources({ anchorEl, onClose, open }) {
@@ -196,6 +197,18 @@ function SearchResources({ anchorEl, onClose, open }) {
           </Button>
         </MenuItem>
         {menuItems.length !== 0 ? menuItems : emptyMenuItems}
+        <MenuItem button={false}>
+          <Button
+            startIcon={<FolderIcon size={'small'} />}
+            classes={addClasses}
+            variant="outlined"
+            color="primary"
+            size="small"
+            fullWidth
+          >
+            {t('Add_local_resourse')}
+          </Button>
+        </MenuItem>
       </Menu>
       <DialogUI
         title={t('Choose_languages_resources')}
