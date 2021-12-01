@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import { ResourcesContextProvider } from 'scripture-resources-rcl';
+//import { ResourcesContextProvider } from 'scripture-resources-rcl';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useTranslation } from 'react-i18next';
 import { ReferenceContext } from './ReferenceContext';
@@ -10,7 +10,7 @@ import {
   defaultTplOBS,
   languages,
   bibleList,
-  server,
+  //server,
 } from '../config/base';
 
 export const AppContext = React.createContext();
@@ -65,7 +65,7 @@ export function AppContextProvider({ children }) {
     return checkLSVal('languageResources', ['en', 'el-x-koine', 'hbo'], 'object');
   });
 
-  const config = { server };
+  //const config = { server };
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -145,22 +145,5 @@ export function AppContextProvider({ children }) {
     },
   };
 
-  return (
-    <AppContext.Provider value={value}>
-      <ResourcesContextProvider
-        reference={{
-          bookId: referenceSelected.bookId,
-          chapter: referenceSelected.chapter,
-        }}
-        resourceLinks={resourceLinks}
-        defaultResourceLinks={_resourceLinks}
-        onResourceLinks={setResourceLinks}
-        resources={resources}
-        onResources={setResources}
-        config={config}
-      >
-        {children}
-      </ResourcesContextProvider>
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

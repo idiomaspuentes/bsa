@@ -43,6 +43,7 @@
     "tc-ui-toolkit": "^6.0.0",
     "translation-helps-rcl": "^3.1.7",
     "use-deep-compare-effect": "^1.8.1",
+    "usfm-js": "^3.3.1",
     "web-vitals": "^2.1.2",
     "word-aligner": "^1.0.0",
     "workbox-background-sync": "^6.4.1",

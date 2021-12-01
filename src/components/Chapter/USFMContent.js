@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 
-import { Verse } from 'scripture-resources-rcl';
+// import { Verse } from 'scripture-resources-rcl';
 import { useTranslation } from 'react-i18next';
 import { getVerseText } from '../../helper';
 import { ReferenceContext } from '../../context';
@@ -22,6 +22,7 @@ function USFMContent({ reference, content, type, fontSize }) {
   const [verseRef] = useScrollToVerse('center');
   const classesNoContent = useNoContentStyles();
   const resource = content.resource;
+  console.log(resource);
   const resourceLink = resource?.resourceLink;
   const { contentNotFoundError, error } = content.resourceStatus;
 
@@ -98,15 +99,9 @@ function USFMContent({ reference, content, type, fontSize }) {
             onContextMenu={(e) => handleContextMenu(e, key, verseObjects)}
             onClick={handleClick}
           >
-            <Verse
-              verseKey={key}
-              verseObjects={verseObjects}
-              paragraphs={false}
-              showUnsupported={false}
-              disableWordPopover={false}
-              reference={{ ...reference, verse: key }}
-              renderOffscreen={false}
-            />
+            <div>
+              {key.toString()}. {getVerseText(verseObjects)}
+            </div>
           </div>
         );
 
@@ -119,7 +114,7 @@ function USFMContent({ reference, content, type, fontSize }) {
   }, [chapter, reference, type, fontSize]);
 
   const noContent = <div className={classesNoContent.root}>{t('No_content')}</div>;
-
+  console.log({ contentNotFoundError, error, type });
   const usfmContent = !contentNotFoundError || !error ? verses : noContent;
 
   return (
