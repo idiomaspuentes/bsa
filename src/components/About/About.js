@@ -14,7 +14,7 @@ const textLabel = PACKAGE_JSON
 
 function About({ open, setOpen, handleClick }) {
   const [log, setLog] = useState();
-
+  console.log('About!!');
   useEffect(() => {
     axios.get(changeLog).then((response) => setLog({ text: response.data }));
   }, []);
@@ -45,4 +45,5 @@ function About({ open, setOpen, handleClick }) {
   );
 }
 
-export default About;
+// export default About;
+export default React.memo(About);

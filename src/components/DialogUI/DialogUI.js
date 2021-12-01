@@ -25,7 +25,7 @@ function DialogUI({
 }) {
   const classesLocalTitle = useLocalTitleStyles();
   const { t } = useTranslation();
-  console.log('DialogUI');
+
   return (
     <Dialog
       classes={classes.root}

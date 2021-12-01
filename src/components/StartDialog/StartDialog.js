@@ -27,7 +27,7 @@ function StartDialog() {
 
   const [activeStep, setActiveStep] = useState(0);
   const [openDialog, setOpenDialog] = useState(openStartDialog);
-
+  console.log('startDialog');
   const handleClose = () => {
     setOpenStartDialog(false);
     setOpenDialog(false);
