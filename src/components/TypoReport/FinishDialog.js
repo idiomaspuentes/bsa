@@ -1,17 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { AppContext } from '../../context';
 import { DialogUI } from '../../components';
 import logo from './friends.png';
 import { Link } from '@material-ui/core';
 
-function FinishDialog({ open, onClose }) {
+function FinishDialog({ open, onClose, errorFile }) {
   const { t } = useTranslation();
-  const {
-    state: { errorFile },
-  } = useContext(AppContext);
 
   return (
     <DialogUI

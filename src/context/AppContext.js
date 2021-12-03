@@ -53,7 +53,7 @@ export function AppContextProvider({ children }) {
   const [resources, setResources] = useState([]);
   const [showBookSelect, setShowBookSelect] = useState(false);
   const [showChapterSelect, setShowChapterSelect] = useState(false);
-  const [showErrorReport, setShowErrorReport] = useState(false);
+
   const [errorFile, setErrorFile] = useState('');
   const [fontSize, setFontSize] = useState(_fontSize ? _fontSize : 100);
   const [loadIntro, setLoadIntro] = useState(false);
@@ -123,7 +123,6 @@ export function AppContextProvider({ children }) {
       _resourceLinks,
       showBookSelect,
       showChapterSelect,
-      showErrorReport,
     },
     actions: {
       setAppConfig,
@@ -140,7 +139,6 @@ export function AppContextProvider({ children }) {
       setResources,
       setShowBookSelect,
       setShowChapterSelect,
-      setShowErrorReport,
     },
   };
 

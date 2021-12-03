@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { Menu, MenuItem } from '@material-ui/core';
-import { AppContext, ReferenceContext } from '../../context';
+import { ReferenceContext } from '../../context';
+import { TypoReport } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -12,9 +13,7 @@ const initialPosition = {
 
 function ContextMenu({ position, setPosition, PopoverClasses }) {
   const { t } = useTranslation();
-  const {
-    actions: { setShowErrorReport },
-  } = useContext(AppContext);
+  const [showErrorReport, setShowErrorReport] = useState(false);
 
   const {
     state: { referenceBlock },
@@ -64,20 +63,30 @@ function ContextMenu({ position, setPosition, PopoverClasses }) {
   };
 
   return (
-    <Menu
-      keepMounted
-      open={position.top !== null}
-      onClose={handleContextClose}
-      anchorPosition={anchorPosition}
-      PopoverClasses={PopoverClasses}
-      anchorReference="anchorPosition"
-    >
-      <MenuItem onClick={handleOpenError}>{t('Error_report')}</MenuItem>
-      <MenuItem onClick={handleVerseToClipboard}>{t('Copy_verse_to_clipboard')}</MenuItem>
-      <MenuItem onClick={handleReferenceToClipboard}>
-        {t('Copy_reference_to_clipboard')}
-      </MenuItem>
-    </Menu>
+    <>
+      <Menu
+        keepMounted
+        open={position.top !== null}
+        onClose={handleContextClose}
+        anchorPosition={anchorPosition}
+        PopoverClasses={PopoverClasses}
+        anchorReference="anchorPosition"
+      >
+        <MenuItem onClick={handleOpenError}>{t('Error_report')}</MenuItem>
+        <MenuItem onClick={handleVerseToClipboard}>
+          {t('Copy_verse_to_clipboard')}
+        </MenuItem>
+        <MenuItem onClick={handleReferenceToClipboard}>
+          {t('Copy_reference_to_clipboard')}
+        </MenuItem>
+      </Menu>
+
+      <TypoReport
+        referenceBlock={referenceBlock}
+        open={showErrorReport}
+        setShowErrorReport={setShowErrorReport}
+      />
+    </>
   );
 }
 

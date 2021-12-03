@@ -5,15 +5,7 @@ import { Workspace } from 'resource-workspace-rcl';
 
 import { AppContext } from './context/AppContext';
 import { ReferenceContext } from './context/ReferenceContext';
-import {
-  Shortcut,
-  Swipes,
-  Intro,
-  Card,
-  TypoReport,
-  SubMenuBar,
-  StartDialog,
-} from './components';
+import { Shortcut, Swipes, Intro, Card, SubMenuBar, StartDialog } from './components';
 import { columns } from './config/base';
 import { getLayoutType } from './helper';
 import { useTranslation } from 'react-i18next';
@@ -131,7 +123,6 @@ export default function App() {
       <StartDialog />
       <Intro />
       <SubMenuBar />
-      <TypoReport />
 
       <Workspace
         gridMargin={[15, 15]}

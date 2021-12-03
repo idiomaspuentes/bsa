@@ -69,4 +69,4 @@ function ReportDialog({
   );
 }
 
-export default ReportDialog;
+export default React.memo(ReportDialog);

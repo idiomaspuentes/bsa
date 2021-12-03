@@ -1,28 +1,19 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { SendError } from '@texttree/user-notes-rcl';
 
-import { AppContext, ReferenceContext } from '../../context';
 import FinishDialog from './FinishDialog';
 import ReportDialog from './ReportDialog';
 
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import useStyles from './style';
 
-export default function TypoReport() {
-  const {
-    state: { showErrorReport },
-    actions: { setShowErrorReport, setErrorFile },
-  } = useContext(AppContext);
-
-  const {
-    state: { referenceBlock },
-  } = useContext(ReferenceContext);
-
+function TypoReport({ referenceBlock = {}, open, setShowErrorReport }) {
   const [valueComment, setValueComment] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [openBackdrop, setOpenBackdrop] = useState(false);
   const [openFinishDialog, setOpenFinishDialog] = useState(false);
+  const [errorFile, setErrorFile] = useState('');
 
   const handleChange = (e) => {
     setValueComment(e.target.value);
@@ -30,11 +21,11 @@ export default function TypoReport() {
 
   const { bookId, chapter, verse, resource, text } = referenceBlock;
 
-  const handleCloseFinishDialog = () => {
+  const handleCloseFinishDialog = useCallback(() => {
     setOpenFinishDialog(false);
-  };
+  }, []);
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     setOpenBackdrop(true);
     setShowErrorReport(false);
     SendError({
@@ -64,11 +55,13 @@ export default function TypoReport() {
         setShowErrorReport(true);
         setOpenBackdrop(false);
       });
-  };
-
-  const handleCancel = () => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const handleCancel = useCallback(() => {
     setShowErrorReport(false);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const classes = useStyles();
 
   return (
@@ -78,14 +71,19 @@ export default function TypoReport() {
       </Backdrop>
       <ReportDialog
         classname={'intro-reportDialog'}
-        open={showErrorReport}
+        open={open}
         valueComment={valueComment}
         handleChange={handleChange}
         handleCancel={handleCancel}
         handleSend={handleSend}
         errorMessage={errorMessage}
       />
-      <FinishDialog open={openFinishDialog} onClose={handleCloseFinishDialog} />
+      <FinishDialog
+        errorFile={errorFile}
+        open={openFinishDialog}
+        onClose={handleCloseFinishDialog}
+      />
     </>
   );
 }
+export default React.memo(TypoReport);
