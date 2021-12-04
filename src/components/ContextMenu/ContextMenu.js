@@ -11,16 +11,18 @@ const initialPosition = {
   top: null,
 };
 
-function ContextMenu({ position, setPosition, PopoverClasses }) {
+function ContextMenu({ position, setPosition, PopoverClasses, showErrorIntro }) {
   const { t } = useTranslation();
-  const [showErrorReport, setShowErrorReport] = useState(false);
 
+  const [showErrorReport, setShowErrorReport] = useState(showErrorIntro);
   const {
     state: { referenceBlock },
   } = useContext(ReferenceContext);
 
   const { enqueueSnackbar } = useSnackbar();
-
+  React.useEffect(() => {
+    setShowErrorReport(showErrorIntro);
+  }, [showErrorIntro]);
   const handleContextClose = () => {
     setPosition(initialPosition);
   };
@@ -85,6 +87,7 @@ function ContextMenu({ position, setPosition, PopoverClasses }) {
         referenceBlock={referenceBlock}
         open={showErrorReport}
         setShowErrorReport={setShowErrorReport}
+        showErrorIntro={showErrorIntro}
       />
     </>
   );

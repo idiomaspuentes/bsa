@@ -36,7 +36,7 @@ function USFMContent({ reference, content, type, fontSize }) {
       resource.project
         .parseUsfm()
         .then((result) => {
-          if (isMounted) {
+          if (isMounted && result.json) {
             if (Object.keys(result.json.chapters).length > 0) {
               setChapter(result.json.chapters[reference.chapter]);
             }

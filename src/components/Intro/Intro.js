@@ -16,6 +16,7 @@ const initialPosition = {
 function Intro() {
   const [introContextMenuPosition, setIntroContextMenuPosition] =
     useState(initialPosition);
+  const [showErrorIntro, setShowErrorIntro] = useState(false);
   const [currentVersePosition, setCurrentVersePosition] = useState(initialPosition);
   const [, setIntroContextMenuOpen] = useState(false);
   const { t } = useTranslation();
@@ -28,13 +29,7 @@ function Intro() {
   } = useContext(ReferenceContext);
 
   const {
-    actions: {
-      setShowBookSelect,
-      setShowChapterSelect,
-      setShowErrorReport,
-      setLoadIntro,
-      setOpenMainMenu,
-    },
+    actions: { setShowBookSelect, setShowChapterSelect, setLoadIntro, setOpenMainMenu },
     state: { loadIntro, showChapterSelect },
   } = useContext(AppContext);
 
@@ -126,12 +121,12 @@ function Intro() {
         stepsRef.current.updateStepElement(stepIndex);
         break;
       case '8':
-        setShowErrorReport(false);
+        setShowErrorIntro(false);
         document.querySelector('.intro-contextMenu').style.opacity = 1;
         stepsRef.current.updateStepElement(stepIndex);
         break;
       case '9':
-        setShowErrorReport(true);
+        setShowErrorIntro(true);
         setOpenMainMenu(true);
         document.querySelector('.intro-hamburger').style.opacity = 0;
         setIntroContextMenuPosition(currentVersePosition);
@@ -140,7 +135,7 @@ function Intro() {
         break;
       case '10':
         setIntroContextMenuPosition(initialPosition);
-        setShowErrorReport(false);
+        setShowErrorIntro(false);
         document.querySelector('.intro-hamburger').style.opacity = 1;
         stepsRef.current.updateStepElement(stepIndex);
         break;
@@ -152,7 +147,7 @@ function Intro() {
     setLoadIntro(false);
     setOpenMainMenu(false);
     setIntroContextMenuOpen(false);
-    setShowErrorReport(false);
+    setShowErrorIntro(false);
     setShowChapterSelect(false);
     setShowBookSelect(false);
   };
@@ -186,6 +181,7 @@ function Intro() {
       <ContextMenu
         PopoverClasses={{ paper: 'intro-contextMenu' }}
         position={introContextMenuPosition}
+        showErrorIntro={showErrorIntro}
       />
     </>
   );
