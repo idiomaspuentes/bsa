@@ -34,7 +34,10 @@ function Card({ type, onClose, classes }) {
       resource = el;
     }
   });
-
+  const close = React.useCallback(() => {
+    onClose();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   if (!resource && resourcesApp.length > 0) {
     return false;
   }
@@ -93,7 +96,7 @@ function Card({ type, onClose, classes }) {
       classes={classes}
       title={resource.title}
       resource={resource}
-      onClose={onClose}
+      onClose={close}
       type={type}
       reference={referenceSelected}
       fontSize={fontSize}

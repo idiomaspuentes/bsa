@@ -39,7 +39,7 @@ export default function SupportTWL(props) {
     setItemIndex(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reference]);
-
+  console.log('TWL');
   return (
     <Card
       closeable

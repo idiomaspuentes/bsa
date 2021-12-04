@@ -9,7 +9,7 @@ import { MenuList, MenuItem } from '@material-ui/core';
 
 function About({ open, setOpen, handleClick }) {
   const [log, setLog] = useState();
-
+  console.log('About');
   useEffect(() => {
     fetch(changeLog)
       .then((response) => response.text())
@@ -48,4 +48,4 @@ function About({ open, setOpen, handleClick }) {
   );
 }
 
-export default About;
+export default React.memo(About);

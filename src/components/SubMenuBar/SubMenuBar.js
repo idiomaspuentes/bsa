@@ -55,9 +55,9 @@ function SubMenuBar() {
     setLoadIntro(true);
     handleCloseMainMenu();
   };
-  const handleClickOpenAbout = () => {
+  const handleClickOpenAbout = React.useCallback(() => {
     setOpenAbout(true);
-  };
+  }, []);
 
   const anchorEl = loadIntro && anchorMainMenu ? anchorMainMenu : menuRef.current;
 

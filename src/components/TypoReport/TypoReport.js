@@ -24,6 +24,7 @@ function TypoReport({ referenceBlock = {}, open, setShowErrorReport }) {
   const handleCloseFinishDialog = useCallback(() => {
     setOpenFinishDialog(false);
   }, []);
+  console.log('TypoReport');
 
   const handleSend = useCallback(() => {
     setOpenBackdrop(true);
