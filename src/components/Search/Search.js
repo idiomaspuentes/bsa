@@ -18,6 +18,7 @@ function Search({
   setValue,
   handleClickWord,
   clickOnWord,
+  usfm,
 }) {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(0);
@@ -33,6 +34,7 @@ function Search({
     resourceSearch,
     referenceSelected,
     searchText,
+    _usfm: usfm,
   });
 
   const handlePagination = (event, value) => {

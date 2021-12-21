@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { DialogUI } from '..';
 import Search from './Search';
 import { ReferenceContext, AppContext } from '../../context';
-
+import { core } from 'scripture-resources-rcl';
 import SearchIcon from '@material-ui/icons/Search';
 import {
   FormControl,
@@ -31,6 +31,8 @@ function SearchDialog() {
   const [resourceSearch, setResourceSearch] = useState([]);
   const [optionsBible, setOptionsBible] = useState([]);
   const [clickOnWord, setClickOnWord] = useState(false);
+  const [usfm, setUsfm] = useState([]);
+  const { resourceFromResourceLink, getResponseData } = core;
 
   const {
     state: { referenceSelected },
@@ -113,7 +115,75 @@ function SearchDialog() {
     setOptionsBible(options);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourcesBible]);
+  const listRef = 'master';
+  const { verse, chapter, bookId } = referenceSelected;
+  const { languageId, name, owner } = resourceSearch && resourceSearch;
 
+  const resourceId = name && name.split('_')[1];
+  const server = 'https://git.door43.org';
+  const references = [
+    { projectId: bookId },
+    { projectId: 'tit' },
+    { projectId: 'mat' },
+    { projectId: 'mrk' },
+  ];
+  const resourceLink =
+    resourcesBible.length > 0 && `${owner}/${languageId}/${resourceId}/${listRef}`;
+  const config = {
+    server,
+  };
+  const resourcesFromResourceLinks = async ({ resourceLink, references, config }) => {
+    const promises = references.map((reference) =>
+      resourceFromResourceLink({
+        resourceLink,
+        reference,
+        config,
+      })
+    );
+    // Filter invalid resources (those that did not parse)
+    const resources = await (
+      await Promise.all(promises)
+    ).filter((parsedResource) => parsedResource != null);
+    return resources;
+  };
+  const [resource, setResource] = useState([]);
+  useEffect(() => {
+    let _usfm = {};
+    if (resource.length > 0) {
+      resource.forEach((res) => {
+        if (res.project) {
+          const key = res.project.identifier;
+
+          res.project
+            .file()
+            .then((response) => {
+              const __usfm = getResponseData(response);
+              _usfm[key] = __usfm;
+            })
+            .catch((error) => console.log(error));
+        }
+      });
+    }
+    if (_usfm) {
+      setUsfm(_usfm);
+    }
+  }, [resource, resourceSearch]);
+  useEffect(() => {
+    if (open) {
+      resourcesFromResourceLinks({
+        resourceLink,
+        references,
+        config,
+      })
+        .then((_resource) => {
+          setResource(_resource);
+        })
+        .catch((error) => {
+          console.warn(`useRsrc() - error fetching resource for:`, error);
+        });
+    }
+  }, [open]);
+  console.log({ usfm });
   return (
     <div>
       <Button
@@ -171,7 +241,7 @@ function SearchDialog() {
           />
 
           <Divider className={classes.divider} />
-          {search ? (
+          {search && usfm ? (
             <Search
               referenceSelected={referenceSelected}
               setValue={setValue}
@@ -183,6 +253,7 @@ function SearchDialog() {
               goToBookChapterVerse={goToBookChapterVerse}
               handleClickWord={handleClickWord}
               clickOnWord={clickOnWord}
+              usfm={usfm}
             />
           ) : null}
         </div>

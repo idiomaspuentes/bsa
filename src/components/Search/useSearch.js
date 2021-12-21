@@ -4,36 +4,32 @@ import {
   useProskomma,
   useImport,
   useSearchForPassagesByBookCode,
+  useSearchForPassagesByBookCodes,
+  useCatalog,
 } from 'proskomma-react-hooks';
 
 import { useContent } from 'translation-helps-rcl/dist/hooks';
-export default function useSearch({ resourceSearch, referenceSelected, searchText }) {
+export default function useSearch({
+  resourceSearch,
+  referenceSelected,
+  searchText,
+  _usfm,
+}) {
   const { chapter, bookId } = referenceSelected;
   const { languageId, name, owner } = resourceSearch;
   const [cvMatching, setCvMatching] = useState([]);
   const [matches, setMatches] = useState(null);
   const [verseObjects, setVerseObjects] = useState({});
-  const [usfm, setUsfm] = useState(null);
+  // const [usfm, setUsfm] = useState(null);
 
-  const content = useContent({
-    chapter: chapter,
-    projectId: bookId,
-    branch: 'master',
-    languageId: languageId,
-    resourceId: name.split('_')[1],
-    owner: owner,
-    server: 'https://git.door43.org',
-  });
-
-  useEffect(() => {
-    if (content) {
-      setUsfm(content.markdown);
-    }
-  }, [content]);
+  // useEffect(() => {
+  //   setUsfm(_usfm);
+  // }, [_usfm]);
 
   const docSetId = `${owner}/${name}`;
   const bookCode = bookId.toUpperCase();
   const verbose = true;
+
   const documents = [
     {
       selectors: {
@@ -41,8 +37,17 @@ export default function useSearch({ resourceSearch, referenceSelected, searchTex
         lang: languageId,
         abbr: name.split('_')[1],
       },
-      bookCode: bookId.toUpperCase(),
-      data: usfm,
+      bookCode: 'mat'.toUpperCase(),
+      data: _usfm['mat'],
+    },
+    {
+      selectors: {
+        org: owner,
+        lang: languageId,
+        abbr: name.split('_')[1],
+      },
+      bookCode: 'mrk'.toUpperCase(),
+      data: _usfm['mrk'],
     },
   ];
 
@@ -57,20 +62,45 @@ export default function useSearch({ resourceSearch, referenceSelected, searchTex
     verbose,
   });
   console.log(importErrors);
+  // const {
+  //   passages,
+
+  //   data,
+  // } = useSearchForPassagesByBookCode({
+  //   proskomma,
+  //   stateId,
+  //   text: searchText,
+  //   docSetId,
+  //   bookCode,
+  //   // blocks: true,
+  //   tokens: true,
+  // });
+  const {
+    stateId: catalogStateId,
+    catalog,
+    errors: catalogErrors,
+  } = useCatalog({
+    proskomma,
+    stateId,
+    verbose,
+  });
+
   const {
     passages,
 
     data,
-  } = useSearchForPassagesByBookCode({
+  } = useSearchForPassagesByBookCodes({
     proskomma,
     stateId,
     text: searchText,
     docSetId,
-    bookCode,
+    bookCodes: ['mat', 'mrk'],
     // blocks: true,
     tokens: true,
+    verbose,
   });
 
+  console.log(passages);
   useEffect(() => {
     setCvMatching(data?.docSet?.document?.cvMatching);
   }, [data]);
