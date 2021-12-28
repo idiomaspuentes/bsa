@@ -26,7 +26,7 @@ function SearchDialog() {
   const [clickOnWord, setClickOnWord] = useState(false);
   const [usfm, setUsfm] = useState([]);
   const { resourceFromResourceLink, getResponseData } = core;
-const 
+
   const {
     state: { referenceSelected },
     actions: { goToBookChapterVerse },
@@ -69,7 +69,6 @@ const
 
   const handleChangeBooks = (e) => {
     console.log(JSON.parse(e.target.value));
-
   };
   const handleChangeResources = (e) => {
     setResourceSearch(JSON.parse(e.target.value));
