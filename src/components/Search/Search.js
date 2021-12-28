@@ -16,8 +16,7 @@ function Search({
   goToBookChapterVerse,
   setSearch,
   setValue,
-  handleClickWord,
-  clickOnWord,
+
   usfm,
 }) {
   const [page, setPage] = useState(1);
@@ -30,7 +29,7 @@ function Search({
   const classes = useStyles();
   const lastIndex = page * limitVersesOnPage;
   const firstIndex = lastIndex - limitVersesOnPage;
-  const { verseObjects, matches } = useSearch({
+  const { passages } = useSearch({
     resourceSearch,
     referenceSelected,
     searchText,
@@ -49,51 +48,25 @@ function Search({
   };
 
   useEffect(() => {
-    if (verseObjects) {
-      let table = [];
-      for (let key in verseObjects) {
-        const { keyChapter, keyVerse, match } = verseObjects[key];
-        const tokens = verseObjects[key].tokens.map((tok) => {
-          return (
-            <span
-              className={`word ${match.includes(tok.payload) ? 'matched' : ''}${
-                clickOnWord ? ' clickable' : ''
-              }`}
-              key={tok.index}
-              onClick={() => clickOnWord && handleClickWord(tok.payload)}
-            >
-              {tok.payload}
-            </span>
-          );
-        });
-
-        table.push({ keyChapter, keyVerse, tokens, bookId });
-      }
-      setTableVerse(table);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [verseObjects, chapter, verse, clickOnWord]);
-
-  useEffect(() => {
     setPages(Math.ceil(versesCount / limitVersesOnPage));
   }, [versesCount]);
 
   useEffect(() => {
-    setVersesCount(Object.keys(verseObjects).length);
-  }, [verseObjects]);
+    setVersesCount(passages.length);
+  }, [passages]);
 
   const tableMatches = (
     <>
       <div className={classes.tableMatches}>
         <TableMatches
-          tableVerse={tableVerse}
+          passages={passages}
           firstIndex={firstIndex}
           lastIndex={lastIndex}
           handleClickVerse={handleClickVerse}
         />
       </div>
 
-      {Object.keys(verseObjects).length > 3 ? (
+      {passages.length > 3 ? (
         <div className={classes.pagination}>
           <Pagination
             count={pages}
@@ -107,19 +80,19 @@ function Search({
       ) : null}
     </>
   );
-
+  console.log({ passages });
   return (
     <div>
-      {matches ? (
+      {passages.length > 0 ? (
         <>
           <div className={classes.wrapperMatchesBlock}>
             <div className={classes.matchesResultString}>
               {`There are ${
-                matches?.length > 0 ? Object.keys(verseObjects).length : 'no'
+                passages.length > 0 ? passages.length : 'no'
               } matches  for the "${searchText}":`}
             </div>
             <br />
-            {matches?.length > 0 ? tableMatches : null}
+            {passages.length > 0 ? tableMatches : null}
           </div>
         </>
       ) : (

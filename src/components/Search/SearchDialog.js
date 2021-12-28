@@ -16,13 +16,6 @@ import {
 } from '@material-ui/core';
 import { useStyles } from './style';
 
-const bookOptions = [
-  { key: 'current', label: 'Current book' },
-  { key: 'nt', label: 'New Testament' },
-  { key: 'ot', label: 'Old Testament' },
-  { key: 'select', label: 'Select book' },
-];
-
 function SearchDialog() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
@@ -33,12 +26,18 @@ function SearchDialog() {
   const [clickOnWord, setClickOnWord] = useState(false);
   const [usfm, setUsfm] = useState([]);
   const { resourceFromResourceLink, getResponseData } = core;
-
+const 
   const {
     state: { referenceSelected },
     actions: { goToBookChapterVerse },
   } = useContext(ReferenceContext);
 
+  const bookOptions = [
+    { key: 'current', label: 'Current book', bookCodes: [referenceSelected.bookId] },
+    { key: 'nt', label: 'New Testament', bookCodes: ['tit'] },
+    { key: 'ot', label: 'Old Testament', bookCodes: ['gen'] },
+    { key: 'select', label: 'Select book', bookCodes: ['gen', 'tit'] },
+  ];
   const {
     state: { appConfig, resourcesApp },
   } = useContext(AppContext);
@@ -69,7 +68,8 @@ function SearchDialog() {
   };
 
   const handleChangeBooks = (e) => {
-    console.log(e.target.value);
+    console.log(JSON.parse(e.target.value));
+
   };
   const handleChangeResources = (e) => {
     setResourceSearch(JSON.parse(e.target.value));
@@ -121,12 +121,7 @@ function SearchDialog() {
 
   const resourceId = name && name.split('_')[1];
   const server = 'https://git.door43.org';
-  const references = [
-    { projectId: bookId },
-    { projectId: 'tit' },
-    { projectId: 'mat' },
-    { projectId: 'mrk' },
-  ];
+  const references = [{ projectId: 'tit' }, { projectId: '1ti' }, { projectId: '2ti' }];
   const resourceLink =
     resourcesBible.length > 0 && `${owner}/${languageId}/${resourceId}/${listRef}`;
   const config = {
@@ -167,6 +162,7 @@ function SearchDialog() {
     if (_usfm) {
       setUsfm(_usfm);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resource, resourceSearch]);
   useEffect(() => {
     if (open) {
@@ -182,8 +178,9 @@ function SearchDialog() {
           console.warn(`useRsrc() - error fetching resource for:`, error);
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
-  console.log({ usfm });
+
   return (
     <div>
       <Button
@@ -214,7 +211,11 @@ function SearchDialog() {
               onChange={handleChangeBooks}
             >
               {bookOptions.map((el) => (
-                <option key={el.key} value={el.key} className={classes.option}>
+                <option
+                  key={el.key}
+                  value={JSON.stringify(el.bookCodes)}
+                  className={classes.option}
+                >
                   {el.label}
                 </option>
               ))}

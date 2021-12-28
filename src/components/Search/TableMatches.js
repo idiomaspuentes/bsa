@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 export default function TableMatches({
-  tableVerse,
+  passages,
   firstIndex,
   lastIndex,
   handleClickVerse,
@@ -37,22 +37,19 @@ export default function TableMatches({
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableBody>
-          {tableVerse
+          {passages
             .map((row) => (
-              <TableRow key={row.key}>
-                <TableCell key={row.key} size={'small'}>
-                  {t(row.bookId + '_abbr').toUpperCase()}
+              <TableRow key={row.reference}>
+                <TableCell key={row.reference} size={'small'}>
+                  {row.reference}
                 </TableCell>
-                <TableCell key={row.key} size={'small'}>
-                  {row.keyChapter + ':' + row.keyVerse}
+                <TableCell key={row.reference} size={'small'}>
+                  {row.text}
                 </TableCell>
-                <TableCell key={row.key} size={'small'}>
-                  {row.tokens}
-                </TableCell>
-                <TableCell key={row.key} size={'small'}>
+                <TableCell key={row.reference} size={'small'}>
                   <LaunchIcon
-                    key={row.key}
-                    onClick={() => handleClickVerse(row.keyChapter, row.keyVerse)}
+                    key={row.reference}
+                    // onClick={() => handleClickVerse(row.keyChapter, row.keyVerse)} TODO - не работает
                     className={classes.launchIcon}
                   />
                 </TableCell>
