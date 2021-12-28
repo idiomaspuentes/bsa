@@ -29,37 +29,29 @@ export default function TableMatches({
   firstIndex,
   lastIndex,
   handleClickVerse,
+  passages,
 }) {
   const { t } = useTranslation();
   const classes = useStyles();
 
+  const passagesVerses = passages
+    .map((row) => (
+      <TableRow key={row.reference}>
+        <TableCell key={row.reference} size={'small'}>
+          {row.reference}
+        </TableCell>
+
+        <TableCell key={row.key} size={'small'}>
+          {row.text}
+        </TableCell>
+      </TableRow>
+    ))
+    .slice(firstIndex, lastIndex);
+
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
-        <TableBody>
-          {tableVerse
-            .map((row) => (
-              <TableRow key={row.key}>
-                <TableCell key={row.key} size={'small'}>
-                  {t(row.bookId + '_abbr').toUpperCase()}
-                </TableCell>
-                <TableCell key={row.key} size={'small'}>
-                  {row.keyChapter + ':' + row.keyVerse}
-                </TableCell>
-                <TableCell key={row.key} size={'small'}>
-                  {row.tokens}
-                </TableCell>
-                <TableCell key={row.key} size={'small'}>
-                  <LaunchIcon
-                    key={row.key}
-                    onClick={() => handleClickVerse(row.keyChapter, row.keyVerse)}
-                    className={classes.launchIcon}
-                  />
-                </TableCell>
-              </TableRow>
-            ))
-            .slice(firstIndex, lastIndex)}
-        </TableBody>
+        <TableBody>{passages && passagesVerses}</TableBody>
       </Table>
     </TableContainer>
   );

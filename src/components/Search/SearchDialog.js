@@ -4,6 +4,7 @@ import { DialogUI } from '..';
 import Search from './Search';
 import { ReferenceContext, AppContext } from '../../context';
 import { core } from 'scripture-resources-rcl';
+import { bibleList } from '../../config/base';
 import SearchIcon from '@material-ui/icons/Search';
 import {
   FormControl,
@@ -16,13 +17,6 @@ import {
 } from '@material-ui/core';
 import { useStyles } from './style';
 
-const bookOptions = [
-  { key: 'current', label: 'Current book' },
-  { key: 'nt', label: 'New Testament' },
-  { key: 'ot', label: 'Old Testament' },
-  { key: 'select', label: 'Select book' },
-];
-
 function SearchDialog() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
@@ -32,17 +26,31 @@ function SearchDialog() {
   const [optionsBible, setOptionsBible] = useState([]);
   const [clickOnWord, setClickOnWord] = useState(false);
   const [usfm, setUsfm] = useState([]);
+  const [references, setReferences] = useState([]);
   const { resourceFromResourceLink, getResponseData } = core;
+  const [documents, setDocuments] = useState([]);
 
   const {
     state: { referenceSelected },
     actions: { goToBookChapterVerse },
   } = useContext(ReferenceContext);
-
+  const [searchBookCodes, setSearchBookCodes] = useState([]);
+  console.log(bibleList);
   const {
     state: { appConfig, resourcesApp },
   } = useContext(AppContext);
   const classes = useStyles();
+  const getBookTList = (t) => {
+    return bibleList
+      .filter((book) => book.categories === `bible-${t}`)
+      .map((book) => book.identifier);
+  };
+
+  const bookOptions = [
+    { key: 'current', label: 'Current book', books: [referenceSelected.bookId] },
+    { key: 'nt', label: 'New Testament', books: getBookTList('nt') },
+    { key: 'ot', label: 'Old Testament', books: getBookTList('ot') },
+  ];
 
   const onCloseDialogUI = () => {
     setOpen(false);
@@ -69,7 +77,8 @@ function SearchDialog() {
   };
 
   const handleChangeBooks = (e) => {
-    console.log(e.target.value);
+    console.log('e.target.value', JSON.parse(e.target.value));
+    setSearchBookCodes(JSON.parse(e.target.value));
   };
   const handleChangeResources = (e) => {
     setResourceSearch(JSON.parse(e.target.value));
@@ -116,30 +125,32 @@ function SearchDialog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourcesBible]);
   const listRef = 'master';
-  const { verse, chapter, bookId } = referenceSelected;
+
   const { languageId, name, owner } = resourceSearch && resourceSearch;
 
   const resourceId = name && name.split('_')[1];
   const server = 'https://git.door43.org';
-  const references = [
-    { projectId: bookId },
-    { projectId: 'tit' },
-    { projectId: 'mat' },
-    { projectId: 'mrk' },
-  ];
+  useEffect(() => {
+    let _references = [];
+    searchBookCodes.forEach((e) => _references.push({ projectId: e }));
+    setReferences(_references);
+  }, [searchBookCodes]);
+
   const resourceLink =
     resourcesBible.length > 0 && `${owner}/${languageId}/${resourceId}/${listRef}`;
   const config = {
     server,
   };
   const resourcesFromResourceLinks = async ({ resourceLink, references, config }) => {
-    const promises = references.map((reference) =>
-      resourceFromResourceLink({
-        resourceLink,
-        reference,
-        config,
-      })
-    );
+    const promises =
+      references &&
+      references.map((reference) =>
+        resourceFromResourceLink({
+          resourceLink,
+          reference,
+          config,
+        })
+      );
     // Filter invalid resources (those that did not parse)
     const resources = await (
       await Promise.all(promises)
@@ -147,18 +158,22 @@ function SearchDialog() {
     return resources;
   };
   const [resource, setResource] = useState([]);
+
+  console.log(Object.keys(usfm));
   useEffect(() => {
     let _usfm = {};
     if (resource.length > 0) {
+      console.log('resource', resource);
       resource.forEach((res) => {
         if (res.project) {
           const key = res.project.identifier;
-
+          console.log(key);
           res.project
             .file()
             .then((response) => {
-              const __usfm = getResponseData(response);
-              _usfm[key] = __usfm;
+              if (getResponseData(response) !== undefined) {
+                _usfm[key] = getResponseData(response);
+              }
             })
             .catch((error) => console.log(error));
         }
@@ -183,7 +198,28 @@ function SearchDialog() {
         });
     }
   }, [open]);
-  console.log({ usfm });
+
+  useEffect(() => {
+    let _documents = [];
+
+    if (searchBookCodes && usfm && resourceSearch) {
+      const { languageId, name, owner } = resourceSearch;
+      searchBookCodes.forEach((code) => {
+        _documents.push({
+          selectors: {
+            org: owner,
+            lang: languageId,
+            abbr: name && name.split('_')[1],
+          },
+          bookCode: code,
+          data: usfm[code],
+        });
+      });
+    }
+    console.log(_documents);
+    setDocuments(_documents);
+  }, [searchBookCodes, usfm, resourceSearch]);
+
   return (
     <div>
       <Button
@@ -214,7 +250,11 @@ function SearchDialog() {
               onChange={handleChangeBooks}
             >
               {bookOptions.map((el) => (
-                <option key={el.key} value={el.key} className={classes.option}>
+                <option
+                  key={el.key}
+                  value={JSON.stringify(el.books)}
+                  className={classes.option}
+                >
                   {el.label}
                 </option>
               ))}
@@ -241,7 +281,7 @@ function SearchDialog() {
           />
 
           <Divider className={classes.divider} />
-          {search && usfm ? (
+          {search && usfm && documents ? (
             <Search
               referenceSelected={referenceSelected}
               setValue={setValue}
@@ -254,6 +294,8 @@ function SearchDialog() {
               handleClickWord={handleClickWord}
               clickOnWord={clickOnWord}
               usfm={usfm}
+              searchBookCodes={searchBookCodes}
+              documents={documents}
             />
           ) : null}
         </div>

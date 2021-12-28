@@ -19,22 +19,24 @@ function Search({
   handleClickWord,
   clickOnWord,
   usfm,
+  searchBookCodes,
+  documents,
 }) {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(0);
   const [versesCount, setVersesCount] = useState(0);
-  const [tableVerse, setTableVerse] = useState([]);
-
-  const { chapter, bookId, verse } = referenceSelected;
+  const { bookId } = referenceSelected;
 
   const classes = useStyles();
   const lastIndex = page * limitVersesOnPage;
   const firstIndex = lastIndex - limitVersesOnPage;
-  const { verseObjects, matches } = useSearch({
+  const { verseObjects, matches, passages } = useSearch({
     resourceSearch,
     referenceSelected,
     searchText,
     _usfm: usfm,
+    searchBookCodes,
+    documents,
   });
 
   const handlePagination = (event, value) => {
@@ -49,51 +51,25 @@ function Search({
   };
 
   useEffect(() => {
-    if (verseObjects) {
-      let table = [];
-      for (let key in verseObjects) {
-        const { keyChapter, keyVerse, match } = verseObjects[key];
-        const tokens = verseObjects[key].tokens.map((tok) => {
-          return (
-            <span
-              className={`word ${match.includes(tok.payload) ? 'matched' : ''}${
-                clickOnWord ? ' clickable' : ''
-              }`}
-              key={tok.index}
-              onClick={() => clickOnWord && handleClickWord(tok.payload)}
-            >
-              {tok.payload}
-            </span>
-          );
-        });
-
-        table.push({ keyChapter, keyVerse, tokens, bookId });
-      }
-      setTableVerse(table);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [verseObjects, chapter, verse, clickOnWord]);
-
-  useEffect(() => {
     setPages(Math.ceil(versesCount / limitVersesOnPage));
   }, [versesCount]);
 
   useEffect(() => {
-    setVersesCount(Object.keys(verseObjects).length);
-  }, [verseObjects]);
+    setVersesCount(passages.length);
+  }, [passages]);
 
   const tableMatches = (
     <>
       <div className={classes.tableMatches}>
         <TableMatches
-          tableVerse={tableVerse}
+          passages={passages}
           firstIndex={firstIndex}
           lastIndex={lastIndex}
           handleClickVerse={handleClickVerse}
         />
       </div>
 
-      {Object.keys(verseObjects).length > 3 ? (
+      {passages.length > 5 ? (
         <div className={classes.pagination}>
           <Pagination
             count={pages}
@@ -110,7 +86,7 @@ function Search({
 
   return (
     <div>
-      {matches ? (
+      {matches || passages ? (
         <>
           <div className={classes.wrapperMatchesBlock}>
             <div className={classes.matchesResultString}>
@@ -119,7 +95,7 @@ function Search({
               } matches  for the "${searchText}":`}
             </div>
             <br />
-            {matches?.length > 0 ? tableMatches : null}
+            {tableMatches}
           </div>
         </>
       ) : (
@@ -129,4 +105,4 @@ function Search({
   );
 }
 
-export default React.memo(Search);
+export default Search;
