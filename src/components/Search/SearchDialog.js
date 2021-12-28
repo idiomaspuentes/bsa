@@ -32,10 +32,15 @@ function SearchDialog() {
     actions: { goToBookChapterVerse },
   } = useContext(ReferenceContext);
 
+  const [references, setReferences] = useState(() => [referenceSelected.bookId]);
+  useEffect(() => {
+    console.log('changed', references);
+  }, [references]);
+
   const bookOptions = [
     { key: 'current', label: 'Current book', bookCodes: [referenceSelected.bookId] },
     { key: 'nt', label: 'New Testament', bookCodes: ['tit'] },
-    { key: 'ot', label: 'Old Testament', bookCodes: ['gen'] },
+    { key: 'ot', label: 'Old Testament', bookCodes: ['rut'] },
     { key: 'select', label: 'Select book', bookCodes: ['gen', 'tit'] },
   ];
   const {
@@ -68,7 +73,7 @@ function SearchDialog() {
   };
 
   const handleChangeBooks = (e) => {
-    console.log(JSON.parse(e.target.value));
+    setReferences(JSON.parse(e.target.value));
   };
   const handleChangeResources = (e) => {
     setResourceSearch(JSON.parse(e.target.value));
@@ -84,6 +89,7 @@ function SearchDialog() {
       setSearch(null);
     }
   }, [value]);
+
   useEffect(() => {
     const currentResources =
       resourcesApp &&
@@ -115,12 +121,10 @@ function SearchDialog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourcesBible]);
   const listRef = 'master';
-  const { verse, chapter, bookId } = referenceSelected;
   const { languageId, name, owner } = resourceSearch && resourceSearch;
 
   const resourceId = name && name.split('_')[1];
   const server = 'https://git.door43.org';
-  const references = [{ projectId: 'tit' }, { projectId: '1ti' }, { projectId: '2ti' }];
   const resourceLink =
     resourcesBible.length > 0 && `${owner}/${languageId}/${resourceId}/${listRef}`;
   const config = {
@@ -130,7 +134,7 @@ function SearchDialog() {
     const promises = references.map((reference) =>
       resourceFromResourceLink({
         resourceLink,
-        reference,
+        reference: { projectId: reference },
         config,
       })
     );
@@ -141,6 +145,7 @@ function SearchDialog() {
     return resources;
   };
   const [resource, setResource] = useState([]);
+
   useEffect(() => {
     let _usfm = {};
     if (resource.length > 0) {
@@ -163,6 +168,7 @@ function SearchDialog() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resource, resourceSearch]);
+
   useEffect(() => {
     if (open) {
       resourcesFromResourceLinks({

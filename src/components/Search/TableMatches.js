@@ -12,8 +12,6 @@ import {
 
 import LaunchIcon from '@material-ui/icons/Launch';
 
-import { useTranslation } from 'react-i18next';
-
 const useStyles = makeStyles({
   table: {
     minWidth: 100,
@@ -24,13 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function TableMatches({
-  passages,
-  firstIndex,
-  lastIndex,
-  handleClickVerse,
-}) {
-  const { t } = useTranslation();
+export default function TableMatches({ passages, firstIndex, lastIndex }) {
   const classes = useStyles();
 
   return (
@@ -38,20 +30,12 @@ export default function TableMatches({
       <Table className={classes.table} aria-label="simple table">
         <TableBody>
           {passages
-            .map((row) => (
-              <TableRow key={row.reference}>
-                <TableCell key={row.reference} size={'small'}>
-                  {row.reference}
-                </TableCell>
-                <TableCell key={row.reference} size={'small'}>
-                  {row.text}
-                </TableCell>
-                <TableCell key={row.reference} size={'small'}>
-                  <LaunchIcon
-                    key={row.reference}
-                    // onClick={() => handleClickVerse(row.keyChapter, row.keyVerse)} TODO - не работает
-                    className={classes.launchIcon}
-                  />
+            .map((row, index) => (
+              <TableRow key={row.reference + index}>
+                <TableCell size={'small'}>{row.reference}</TableCell>
+                <TableCell size={'small'}>{row.text}</TableCell>
+                <TableCell size={'small'}>
+                  <LaunchIcon className={classes.launchIcon} />
                 </TableCell>
               </TableRow>
             ))

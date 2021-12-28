@@ -16,15 +16,11 @@ function Search({
   goToBookChapterVerse,
   setSearch,
   setValue,
-
   usfm,
 }) {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(0);
   const [versesCount, setVersesCount] = useState(0);
-  const [tableVerse, setTableVerse] = useState([]);
-
-  const { chapter, bookId, verse } = referenceSelected;
 
   const classes = useStyles();
   const lastIndex = page * limitVersesOnPage;
@@ -40,7 +36,7 @@ function Search({
     setPage(value);
   };
 
-  const handleClickVerse = (chapter, verse) => {
+  const handleClickVerse = (bookId, chapter, verse) => {
     setValue('');
     goToBookChapterVerse(bookId, chapter, verse);
     setSearch(null);
