@@ -279,14 +279,7 @@ export const langNames = {
   },
 };
 
-export const owners = [
-  'door43-catalog',
-  'bsa',
-  'unfoldingword',
-  'ru_gl',
-  'gra',
-  'DevleskoDrom',
-];
+export const owners = ['es-419_obt', 'unfoldingword'];
 
 //resource, that have not manifest or others reason
 export const blackListResources = [
